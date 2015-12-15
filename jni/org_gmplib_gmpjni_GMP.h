@@ -63,6 +63,14 @@ JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1set_1str
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_gmp_version
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_gmplib_gmpjni_GMP_native_1gmp_1version
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpz_get_d_2exp
  * Signature: (Lorg/gmplib/gmpjni/GMP/MutableInteger;J)D
  */

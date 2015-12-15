@@ -179,6 +179,18 @@ JNIEXPORT jstring JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1get_1str
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_gmp_version
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_gmplib_gmpjni_GMP_native_1gmp_1version
+  (JNIEnv *env, jclass cl)
+{
+    jstring ret = env->NewStringUTF(gmp_version);
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpf_get_d_2exp
  * Signature: (Lorg/gmplib/gmpjni/GMP/MutableInteger;J)D
  */

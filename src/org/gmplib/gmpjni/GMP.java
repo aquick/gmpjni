@@ -220,6 +220,12 @@ public class GMP
 	native_mpf_set_str(x.handle, str, base);
     }
 
+    private static native String native_gmp_version();
+    public static String getVersion()
+    {
+	return native_gmp_version();
+    }
+
     /**********************************************************
      * TODO
      **********************************************************/
