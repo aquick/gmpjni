@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <errno.h>
 #include "org_gmplib_gmpjni_GMP.h"
 #include "org_gmplib_gmpjni_GMP_GMPException.h"
 #include "gmp.h"
@@ -179,6 +181,192 @@ JNIEXPORT jstring JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1get_1str
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_out_str
+ * Signature: (Ljava/lang/String;IJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1out_1str
+  (JNIEnv *env, jclass cl, jstring filename, jint base, jlong op)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpz_t *opptr = reinterpret_cast<mpz_t *>(op);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "w");
+	if (file != NULL) {
+	    ret = mpz_out_str(file, base, *opptr);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1inp_1str
+  (JNIEnv *env, jclass cl, jlong rop, jstring filename, jint base)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpz_t *ropptr = reinterpret_cast<mpz_t *>(rop);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "r");
+	if (file != NULL) {
+	    ret = mpz_inp_str(*ropptr, file, base);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_out_str
+ * Signature: (Ljava/lang/String;IJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1out_1str
+  (JNIEnv *env, jclass cl, jstring filename, jint base, jlong op)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpq_t *opptr = reinterpret_cast<mpq_t *>(op);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "w");
+	if (file != NULL) {
+	    ret = mpq_out_str(file, base, *opptr);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1inp_1str
+  (JNIEnv *env, jclass cl, jlong rop, jstring filename, jint base)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpq_t *ropptr = reinterpret_cast<mpq_t *>(rop);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "r");
+	if (file != NULL) {
+	    ret = mpq_inp_str(*ropptr, file, base);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpf_out_str
+ * Signature: (Ljava/lang/String;IJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1out_1str
+  (JNIEnv *env, jclass cl, jstring filename, jint base, jlong n_digits, jlong op)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpf_t *opptr = reinterpret_cast<mpf_t *>(op);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "w");
+	if (file != NULL) {
+	    ret = mpf_out_str(file, base, n_digits, *opptr);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpf_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1inp_1str
+  (JNIEnv *env, jclass cl, jlong rop, jstring filename, jint base)
+{
+    size_t ret = 0;
+    jboolean is_copy;
+    char const *fn_chars = NULL;
+    FILE *file = NULL;
+    mpf_t *ropptr = reinterpret_cast<mpf_t *>(rop);
+    char buffer[30];
+
+    if (filename != 0) {
+        fn_chars = env->GetStringUTFChars(filename, &is_copy);
+	file = fopen(fn_chars, "r");
+	if (file != NULL) {
+	    ret = mpf_inp_str(*ropptr, file, base);
+	    fclose(file);
+	} else {
+	    snprintf(buffer, sizeof(buffer), "I/O Error (%d)", errno);
+	    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_IO_ERROR,
+				env->NewStringUTF(buffer));
+	}
+        env->ReleaseStringUTFChars(filename, fn_chars);
+    }
+    return ret;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_gmp_version
  * Signature: ()Ljava/lang/String;
  */
@@ -289,12 +477,48 @@ JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1REALLOC
     ASSERT_ALWAYS_MPN (env, PTR(z), ABSIZ(z));               \
   } while (0)
 
+#define MPQ_CHECK_FORMAT(env, q)                     \
+  do {                                  \
+    MPZ_CHECK_FORMAT (env, mpq_numref (q));                  \
+    MPZ_CHECK_FORMAT (env, mpq_denref (q));                  \
+    ASSERT_ALWAYS (env, SIZ(mpq_denref(q)) >= 1);                \
+                                    \
+    if (SIZ(mpq_numref(q)) == 0)                    \
+      {                                 \
+    /* should have zero as 0/1 */                   \
+    ASSERT_ALWAYS (env, SIZ(mpq_denref(q)) == 1              \
+               && PTR(mpq_denref(q))[0] == 1);          \
+      }                                 \
+    else                                \
+      {                                 \
+    /* should have no common factors */             \
+    mpz_t  g;                           \
+    mpz_init (g);                           \
+    mpz_gcd (g, mpq_numref(q), mpq_denref(q));          \
+    ASSERT_ALWAYS (env, mpz_cmp_ui (g, 1) == 0);             \
+    mpz_clear (g);                          \
+      }                                 \
+  } while (0)
+
 JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1CHECK_1FORMAT
   (JNIEnv *env, jclass cl, jlong z)
 {
     mpz_t *zptr = reinterpret_cast<mpz_t *>(z);
 
     MPZ_CHECK_FORMAT(env, *zptr);
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_internal_CHECK_FORMAT
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1internal_1CHECK_1FORMAT
+  (JNIEnv *env, jclass cl, jlong q)
+{
+    mpq_t *qptr = reinterpret_cast<mpq_t *>(q);
+
+    MPQ_CHECK_FORMAT(env, *qptr);
 }
 
 /*

@@ -23,6 +23,7 @@ public class GMP
 	public static final int PARAMETER_OUT_OF_RANGE = 2;
 	public static final int OUT_OF_MEMORY = 3;
 	public static final int BAD_FORMAT = 4;
+	public static final int IO_ERROR = 5;
 
 	public GMPException(int code, String msg)
 	{
@@ -249,6 +250,48 @@ public class GMP
     {
 	checkUnsignedIntRange(n_digits);
 	return native_mpf_get_str(exp, base, n_digits, op.handle);
+    }
+
+    private static native long native_mpz_out_str(String filename, int base, long op);
+    public static long mpz_out_str(String filename, int base, mpz_t op)
+	throws GMPException
+    {
+	return native_mpz_out_str(filename, base, op.handle);
+    }
+
+    private static native long native_mpz_inp_str(long rop, String filename, int base);
+    public static long mpz_inp_str(mpz_t rop, String filename, int base)
+	throws GMPException
+    {
+	return native_mpz_inp_str(rop.handle, filename, base);
+    }
+
+    private static native long native_mpq_out_str(String filename, int base, long op);
+    public static long mpq_out_str(String filename, int base, mpq_t op)
+	throws GMPException
+    {
+	return native_mpq_out_str(filename, base, op.handle);
+    }
+
+    private static native long native_mpq_inp_str(long rop, String filename, int base);
+    public static long mpq_inp_str(mpq_t rop, String filename, int base)
+	throws GMPException
+    {
+	return native_mpq_inp_str(rop.handle, filename, base);
+    }
+
+    private static native long native_mpf_out_str(String filename, int base, long n_digits, long op);
+    public static long mpf_out_str(String filename, int base, long n_digits, mpf_t op)
+	throws GMPException
+    {
+	return native_mpf_out_str(filename, base, n_digits, op.handle);
+    }
+
+    private static native long native_mpf_inp_str(long rop, String filename, int base);
+    public static long mpf_inp_str(mpf_t rop, String filename, int base)
+	throws GMPException
+    {
+	return native_mpf_inp_str(rop.handle, filename, base);
     }
 
     private static native int native_refmpn_cmp(long x, long[] y, long size);
@@ -1890,6 +1933,13 @@ public class GMP
 	throws GMPException
     {
 	native_mpz_internal_CHECK_FORMAT(z.handle);
+    }
+
+    private static native void native_mpq_internal_CHECK_FORMAT(long z);
+    public static void mpq_internal_CHECK_FORMAT(mpq_t z)
+	throws GMPException
+    {
+	native_mpq_internal_CHECK_FORMAT(z.handle);
     }
 
     private static native /*unsigned long int*/ long native_mpz_internal_get_ulimb(long z, int index);

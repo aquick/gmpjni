@@ -95,6 +95,54 @@ JNIEXPORT jstring JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1get_1str
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_out_str
+ * Signature: (Ljava/lang/String;IJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1out_1str
+  (JNIEnv *, jclass, jstring, jint, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1inp_1str
+  (JNIEnv *, jclass, jlong, jstring, jint);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_out_str
+ * Signature: (Ljava/lang/String;IJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1out_1str
+  (JNIEnv *, jclass, jstring, jint, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1inp_1str
+  (JNIEnv *, jclass, jlong, jstring, jint);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpf_out_str
+ * Signature: (Ljava/lang/String;IJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1out_1str
+  (JNIEnv *, jclass, jstring, jint, jlong, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpf_inp_str
+ * Signature: (JLjava/lang/String;I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpf_1inp_1str
+  (JNIEnv *, jclass, jlong, jstring, jint);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_refmpn_cmp
  * Signature: (J[JJ)I
  */
@@ -1835,6 +1883,14 @@ JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1REALLOC
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1CHECK_1FORMAT
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_internal_CHECK_FORMAT
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1internal_1CHECK_1FORMAT
   (JNIEnv *, jclass, jlong);
 
 /*

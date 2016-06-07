@@ -40,7 +40,7 @@ see https://www.gnu.org/licenses/.  */
 #if ! defined (__GMP_WITHIN_CONFIGURE)
 #define __GMP_HAVE_HOST_CPU_FAMILY_power   0
 #define __GMP_HAVE_HOST_CPU_FAMILY_powerpc 0
-#define GMP_LIMB_BITS                      32
+#define GMP_LIMB_BITS                      64
 #define GMP_NAIL_BITS                      0
 #endif
 #define GMP_NUMB_BITS     (GMP_LIMB_BITS - GMP_NAIL_BITS)
@@ -2320,8 +2320,8 @@ enum
 };
 
 /* Define CC and CFLAGS which were used to build this version of GMP */
-#define __GMP_CC "arm-linux-androideabi-gcc -std=gnu99"
-#define __GMP_CFLAGS "-O2 -g -pedantic -fomit-frame-pointer -Wa,--noexecstack -ffunction-sections -funwind-tables -fstack-protector -fno-strict-aliasing -finline-limit=64 -march=armv7-a -mfloat-abi=softfp -mfpu=vfp"
+#define __GMP_CC "x86_64-linux-android-gcc -std=gnu99"
+#define __GMP_CFLAGS "-O2 -g -pedantic -Wa,--noexecstack -fomit-frame-pointer -ffunction-sections -funwind-tables -fstrict-aliasing -funswitch-loops -finline-limit=300 -no-canonical-prefixes -fstack-protector-strong -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel"
 
 /* Major version number is the value of __GNU_MP__ too, above and in mp.h. */
 #define __GNU_MP_VERSION            6

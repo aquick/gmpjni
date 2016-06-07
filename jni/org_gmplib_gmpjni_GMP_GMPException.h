@@ -19,6 +19,8 @@ extern "C" {
 #define org_gmplib_gmpjni_GMP_GMPException_OUT_OF_MEMORY 3L
 #undef org_gmplib_gmpjni_GMP_GMPException_BAD_FORMAT
 #define org_gmplib_gmpjni_GMP_GMPException_BAD_FORMAT 4L
+#undef org_gmplib_gmpjni_GMP_GMPException_IO_ERROR
+#define org_gmplib_gmpjni_GMP_GMPException_IO_ERROR 5L
 #ifdef __cplusplus
 }
 #endif
