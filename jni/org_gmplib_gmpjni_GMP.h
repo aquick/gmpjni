@@ -1359,6 +1359,14 @@ JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1cmp_1si
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpq_cmp_z
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1cmp_1z
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpq_sgn
  * Signature: (J)I
  */

@@ -1931,6 +1931,15 @@ JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1cmp_1si
     return mpq_cmp_si(*op1ptr, num2, static_cast<unsigned long int>(den2));
 }
 
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1cmp_1z
+  (JNIEnv *env, jclass cl, jlong op1, jlong op2)
+{
+    mpq_t *op1ptr = reinterpret_cast<mpq_t *>(op1);
+    mpz_t *op2ptr = reinterpret_cast<mpz_t *>(op2);
+
+    return mpq_cmp_z(*op1ptr, *op2ptr);
+}
+
 JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpq_1sgn
   (JNIEnv *env, jclass cl, jlong op)
 {

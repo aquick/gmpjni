@@ -1453,6 +1453,13 @@ public class GMP
 	return native_mpq_cmp_si(op1.handle, num2, den2);
     }
 
+    private static native int native_mpq_cmp_z(long op1, long op2);
+    public static int mpq_cmp_z(mpq_t op1, mpz_t op2)
+	throws GMPException
+    {
+	return native_mpq_cmp_z(op1.handle, op2.handle);
+    }
+
     private static native int native_mpq_sgn(long op);
     public static int mpq_sgn(mpq_t op)
 	throws GMPException
