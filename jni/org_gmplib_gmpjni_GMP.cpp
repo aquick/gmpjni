@@ -24,6 +24,39 @@ void throwGMPException
 
 /*
  * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_LIMB_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1LIMB_1BITS
+  (JNIEnv *env, jclass cl)
+{
+    return GMP_LIMB_BITS;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_NAIL_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1NAIL_1BITS
+  (JNIEnv *env, jclass cl)
+{
+    return GMP_NAIL_BITS;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_NUMB_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1NUMB_1BITS
+  (JNIEnv *env, jclass cl)
+{
+    return GMP_NUMB_BITS;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpz_set_str
  * Signature: (JLjava/lang/String;I)V
  */

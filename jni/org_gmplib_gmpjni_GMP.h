@@ -15,12 +15,30 @@ extern "C" {
 #define org_gmplib_gmpjni_GMP_ULONG_MAX 4294967295i64
 #undef org_gmplib_gmpjni_GMP_LONG_MAX
 #define org_gmplib_gmpjni_GMP_LONG_MAX 2147483647L
-#undef org_gmplib_gmpjni_GMP_GMP_LIMB_BITS
-#define org_gmplib_gmpjni_GMP_GMP_LIMB_BITS 32L
-#undef org_gmplib_gmpjni_GMP_GMP_NAIL_BITS
-#define org_gmplib_gmpjni_GMP_GMP_NAIL_BITS 0L
-#undef org_gmplib_gmpjni_GMP_GMP_NUMB_BITS
-#define org_gmplib_gmpjni_GMP_GMP_NUMB_BITS 32L
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_LIMB_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1LIMB_1BITS
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_NAIL_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1NAIL_1BITS
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    GMP_NUMB_BITS
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_gmplib_gmpjni_GMP_GMP_1NUMB_1BITS
+  (JNIEnv *, jclass);
+
 /*
  * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpz_set_str
