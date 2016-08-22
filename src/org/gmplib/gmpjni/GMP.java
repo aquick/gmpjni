@@ -11,9 +11,9 @@ public class GMP
     public static final int  LONG_MAX = 0x7FFFFFFF;
 
     // For tests
-    public static final int GMP_LIMB_BITS = 32;
-    public static final int GMP_NAIL_BITS = 0;
-    public static final int GMP_NUMB_BITS = GMP_LIMB_BITS - GMP_NAIL_BITS;
+    public static native int GMP_LIMB_BITS();
+    public static native int GMP_NAIL_BITS();
+    public static native int GMP_NUMB_BITS();
 
     public static class GMPException extends Exception
     {
