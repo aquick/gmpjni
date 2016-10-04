@@ -657,6 +657,83 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
     return delta;
 }
 
+#include <arm_neon.h>
+
+mp_limb_t
+my_mpn_mul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
+{
+    mp_limb_t cl;
+    mp_limb_t hpl;
+    mp_limb_t lpl;
+    uint32x2_t u;
+    mp_limb_t *ulp;
+    uint32x2_t v = {vl, vl};
+    uint64x2_t r;
+    mp_limb_t *rlp;
+
+    cl = 0;
+    do {
+	ulp = reinterpret_cast<mp_limb_t *>(&u[0]);
+        *ulp++ = *up++;
+        if (n > 1) {
+            *ulp = *up++;
+	} else {
+	    *ulp = 0;
+        }
+        r = vmull_u32(u, v);
+        //umul_ppmm (hpl, lpl, ul, vl);
+        rlp = reinterpret_cast<mp_limb_t *>(&r[0]);
+
+        lpl = *rlp++; // (mp_limb_t)(r[0] & 0xFFFFFFFF);
+        hpl = *rlp++; // (mp_limb_t)(r[0] >> 32);
+        lpl += cl;
+        cl = (lpl < cl ? 1 : 0) + hpl;
+
+        *rp++ = lpl;
+
+        if (n > 1) {
+            lpl = *rlp++; // (mp_limb_t)(r[1] & 0xFFFFFFFF);
+            hpl = *rlp++; // (mp_limb_t)(r[1] >> 32);
+            lpl += cl;
+            cl = (lpl < cl ? 1 : 0) + hpl;
+
+            *rp++ = lpl;
+        }
+        if (--n == 0) break;
+    }
+    while (--n != 0);
+
+    return cl;
+}
+
+/* Return non-zero if xp,xsize and yp,ysize overlap.
+   If xp+xsize<=yp there's no overlap, or if yp+ysize<=xp there's no
+   overlap.  If both these are false, there's an overlap. */
+#define MPN_OVERLAP_P(xp, xsize, yp, ysize)             \
+  ((xp) + (xsize) > (yp) && (yp) + (ysize) > (xp))
+#define MEM_OVERLAP_P(xp, xsize, yp, ysize)             \
+  (   (char *) (xp) + (xsize) > (char *) (yp)               \
+   && (char *) (yp) + (ysize) > (char *) (xp))
+
+/* Return non-zero if xp,xsize and yp,ysize are either identical or not
+   overlapping.  Return zero if they're partially overlapping. */
+#define MPN_SAME_OR_SEPARATE_P(xp, yp, size)                \
+  MPN_SAME_OR_SEPARATE2_P(xp, size, yp, size)
+#define MPN_SAME_OR_SEPARATE2_P(xp, xsize, yp, ysize)           \
+  ((xp) == (yp) || ! MPN_OVERLAP_P (xp, xsize, yp, ysize))
+
+/* Return non-zero if dst,dsize and src,ssize are either identical or
+   overlapping in a way suitable for an incrementing/decrementing algorithm.
+   Return zero if they're partially overlapping in an unsuitable fashion. */
+#define MPN_SAME_OR_INCR2_P(dst, dsize, src, ssize)         \
+  ((dst) <= (src) || ! MPN_OVERLAP_P (dst, dsize, src, ssize))
+#define MPN_SAME_OR_INCR_P(dst, src, size)              \
+  MPN_SAME_OR_INCR2_P(dst, size, src, size)
+#define MPN_SAME_OR_DECR2_P(dst, dsize, src, ssize)         \
+  ((dst) >= (src) || ! MPN_OVERLAP_P (dst, dsize, src, ssize))
+#define MPN_SAME_OR_DECR_P(dst, src, size)              \
+  MPN_SAME_OR_DECR2_P(dst, size, src, size)
+
 /*
  * Class:     org_gmplib_gmpjni_GMP
  * Method:    native_mpz_internal_mpn_mul_1_neon
@@ -665,8 +742,37 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
 JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1mul_11_1neon
   (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
 {
-    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_OPERATION_NOT_SUPPORTED, env->NewStringUTF("operation not supported"));
-    return -1;
+    mpz_t *xptr = reinterpret_cast<mpz_t *>(x);
+    mp_size_t  n = SIZ(*xptr);
+    mp_srcptr xp = PTR(*xptr);
+    mpz_t *rptr = reinterpret_cast<mpz_t *>(r);
+    mp_ptr rp = PTR(*rptr);
+    mp_limb_t yl = static_cast<mp_limb_t>(y);
+    mp_limb_t c;
+    timespec tb = {0, 0};
+    timespec te = {0, 0};
+    int rc;
+    int64_t delta = -1;
+
+    //ASSERT_ALWAYS (env, n >= 1);
+    //ASSERT_ALWAYS (env, MPN_SAME_OR_INCR_P (rp, xp, n));
+
+    rc = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tb);
+    c = my_mpn_mul_1(rp, xp, n, yl);
+    rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
+
+    ASSERT_ALWAYS(env, ABSIZ(*rptr) > n);
+    rp[n] = c;
+    if (rc == 0) {
+	// assumes delta is less than 4 seconds
+        delta = te.tv_nsec - tb.tv_nsec;
+	if (delta < 0) {
+	    ASSERT_ALWAYS(env, te.tv_sec - tb.tv_sec <= 4);
+	    delta += 1000000000L;
+	    delta += static_cast<int64_t>(te.tv_sec - tb.tv_sec - 1)*1000000000L;
+	}
+    }
+    return delta;
 }
 
 /************************************************************************

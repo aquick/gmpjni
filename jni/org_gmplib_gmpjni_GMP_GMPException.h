@@ -21,6 +21,10 @@ extern "C" {
 #define org_gmplib_gmpjni_GMP_GMPException_BAD_FORMAT 4L
 #undef org_gmplib_gmpjni_GMP_GMPException_IO_ERROR
 #define org_gmplib_gmpjni_GMP_GMPException_IO_ERROR 5L
+#undef org_gmplib_gmpjni_GMP_GMPException_OPERATION_NOT_SUPPORTED
+#define org_gmplib_gmpjni_GMP_GMPException_OPERATION_NOT_SUPPORTED 6L
+#undef org_gmplib_gmpjni_GMP_GMPException_INTERNAL_ERROR
+#define org_gmplib_gmpjni_GMP_GMPException_INTERNAL_ERROR 7L
 #ifdef __cplusplus
 }
 #endif

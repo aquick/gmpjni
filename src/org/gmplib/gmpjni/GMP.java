@@ -24,6 +24,8 @@ public class GMP
 	public static final int OUT_OF_MEMORY = 3;
 	public static final int BAD_FORMAT = 4;
 	public static final int IO_ERROR = 5;
+	public static final int OPERATION_NOT_SUPPORTED = 6;
+	public static final int INTERNAL_ERROR = 7;
 
 	public GMPException(int code, String msg)
 	{
@@ -1962,6 +1964,22 @@ public class GMP
     {
 	checkUnsignedIntRange(value);
 	native_mpz_internal_set_ulimb(z.handle, index, value);
+    }
+
+    private static native long native_mpz_internal_mpn_mul_1(long r, long x, long y);
+    public static long mpz_internal_mpn_mul_1(mpz_t r, mpz_t x, long y)
+	throws GMPException
+    {
+	checkUnsignedIntRange(y);
+	return native_mpz_internal_mpn_mul_1(r.handle, x.handle, y);
+    }
+
+    private static native long native_mpz_internal_mpn_mul_1_neon(long r, long x, long y);
+    public static long mpz_internal_mpn_mul_1_neon(mpz_t r, mpz_t x, long y)
+	throws GMPException
+    {
+	checkUnsignedIntRange(y);
+	return native_mpz_internal_mpn_mul_1_neon(r.handle, x.handle, y);
     }
 
     /***
