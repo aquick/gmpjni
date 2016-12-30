@@ -643,8 +643,52 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
     c = mpn_mul_1(rp, xp, n, yl);
     rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
 
-    ASSERT_ALWAYS(env, ABSIZ(*rptr) > n);
-    rp[n] = c;
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
+    if (rc == 0) {
+	// assumes delta is less than 4 seconds
+        delta = te.tv_nsec - tb.tv_nsec;
+	if (delta < 0) {
+	    ASSERT_ALWAYS(env, te.tv_sec - tb.tv_sec <= 4);
+	    delta += 1000000000L;
+	    delta += static_cast<int64_t>(te.tv_sec - tb.tv_sec - 1)*1000000000L;
+	}
+    }
+    return delta;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11
+  (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
+{
+    mpz_t *xptr = reinterpret_cast<mpz_t *>(x);
+    mp_size_t  n = SIZ(*xptr);
+    mp_srcptr xp = PTR(*xptr);
+    mpz_t *rptr = reinterpret_cast<mpz_t *>(r);
+    mp_ptr rp = PTR(*rptr);
+    mp_limb_t yl = static_cast<mp_limb_t>(y);
+    mp_limb_t c;
+    timespec tb = {0, 0};
+    timespec te = {0, 0};
+    int rc;
+    int64_t delta = -1;
+
+    rc = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tb);
+    c = mpn_addmul_1(rp, xp, n, yl);
+    rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
+
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
     if (rc == 0) {
 	// assumes delta is less than 4 seconds
         delta = te.tv_nsec - tb.tv_nsec;
@@ -659,6 +703,7 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
 
 #include <arm_neon.h>
 
+#if GMP_NAIL_BITS == 0
 mp_limb_t
 my_mpn_mul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
 {
@@ -677,8 +722,8 @@ my_mpn_mul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
         *ulp++ = *up++;
         if (n > 1) {
             *ulp = *up++;
-	} else {
-	    *ulp = 0;
+        } else {
+            *ulp = 0;
         }
         r = vmull_u32(u, v);
         //umul_ppmm (hpl, lpl, ul, vl);
@@ -705,6 +750,61 @@ my_mpn_mul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
 
     return cl;
 }
+
+mp_limb_t
+my_mpn_addmul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
+{
+    mp_limb_t cl;
+    mp_limb_t rl;
+    mp_limb_t hpl;
+    mp_limb_t lpl;
+    uint32x2_t u;
+    mp_limb_t *ulp;
+    uint32x2_t v = {vl, vl};
+    uint64x2_t r;
+    mp_limb_t *rlp;
+
+    cl = 0;
+    do {
+	ulp = reinterpret_cast<mp_limb_t *>(&u[0]);
+        *ulp++ = *up++;
+        if (n > 1) {
+            *ulp = *up++;
+        } else {
+            *ulp = 0;
+        }
+        r = vmull_u32(u, v);
+        //umul_ppmm (hpl, lpl, ul, vl);
+        rlp = reinterpret_cast<mp_limb_t *>(&r[0]);
+
+        lpl = *rlp++; // (mp_limb_t)(r[0] & 0xFFFFFFFF);
+        hpl = *rlp++; // (mp_limb_t)(r[0] >> 32);
+        lpl += cl;
+        cl = (lpl < cl ? 1 : 0) + hpl;
+
+        rl = *rp;
+        lpl = rl + lpl;
+        cl += (lpl < rl ? 1 : 0);
+        *rp++ = lpl;
+
+        if (n > 1) {
+            lpl = *rlp++; // (mp_limb_t)(r[1] & 0xFFFFFFFF);
+            hpl = *rlp++; // (mp_limb_t)(r[1] >> 32);
+            lpl += cl;
+            cl = (lpl < cl ? 1 : 0) + hpl;
+
+            rl = *rp;
+            lpl = rl + lpl;
+            cl += (lpl < rl ? 1 : 0);
+            *rp++ = lpl;
+        }
+        if (--n == 0) break;
+    }
+    while (--n != 0);
+
+    return cl;
+}
+#endif
 
 /* Return non-zero if xp,xsize and yp,ysize overlap.
    If xp+xsize<=yp there's no overlap, or if yp+ysize<=xp there's no
@@ -754,15 +854,62 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
     int rc;
     int64_t delta = -1;
 
-    //ASSERT_ALWAYS (env, n >= 1);
-    //ASSERT_ALWAYS (env, MPN_SAME_OR_INCR_P (rp, xp, n));
+    ASSERT_ALWAYS (env, n >= 1);
+    ASSERT_ALWAYS (env, MPN_SAME_OR_INCR_P (rp, xp, n));
 
     rc = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tb);
     c = my_mpn_mul_1(rp, xp, n, yl);
     rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
 
-    ASSERT_ALWAYS(env, ABSIZ(*rptr) > n);
-    rp[n] = c;
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
+    if (rc == 0) {
+	// assumes delta is less than 4 seconds
+        delta = te.tv_nsec - tb.tv_nsec;
+	if (delta < 0) {
+	    ASSERT_ALWAYS(env, te.tv_sec - tb.tv_sec <= 4);
+	    delta += 1000000000L;
+	    delta += static_cast<int64_t>(te.tv_sec - tb.tv_sec - 1)*1000000000L;
+	}
+    }
+    return delta;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1_neon
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11_1neon
+  (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
+{
+    mpz_t *xptr = reinterpret_cast<mpz_t *>(x);
+    mp_size_t  n = SIZ(*xptr);
+    mp_srcptr xp = PTR(*xptr);
+    mpz_t *rptr = reinterpret_cast<mpz_t *>(r);
+    mp_ptr rp = PTR(*rptr);
+    mp_limb_t yl = static_cast<mp_limb_t>(y);
+    mp_limb_t c;
+    timespec tb = {0, 0};
+    timespec te = {0, 0};
+    int rc;
+    int64_t delta = -1;
+
+    ASSERT_ALWAYS (env, n >= 1);
+    ASSERT_ALWAYS (env, MPN_SAME_OR_SEPARATE_P (rp, xp, n));
+
+    rc = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tb);
+    c = my_mpn_addmul_1(rp, xp, n, yl);
+    rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
+
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
     if (rc == 0) {
 	// assumes delta is less than 4 seconds
         delta = te.tv_nsec - tb.tv_nsec;

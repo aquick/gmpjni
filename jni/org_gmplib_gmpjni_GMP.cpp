@@ -643,8 +643,52 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
     c = mpn_mul_1(rp, xp, n, yl);
     rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
 
-    ASSERT_ALWAYS(env, ABSIZ(*rptr) > n);
-    rp[n] = c;
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
+    if (rc == 0) {
+	// assumes delta is less than 4 seconds
+        delta = te.tv_nsec - tb.tv_nsec;
+	if (delta < 0) {
+	    ASSERT_ALWAYS(env, te.tv_sec - tb.tv_sec <= 4);
+	    delta += 1000000000L;
+	    delta += static_cast<int64_t>(te.tv_sec - tb.tv_sec - 1)*1000000000L;
+	}
+    }
+    return delta;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11
+  (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
+{
+    mpz_t *xptr = reinterpret_cast<mpz_t *>(x);
+    mp_size_t  n = SIZ(*xptr);
+    mp_srcptr xp = PTR(*xptr);
+    mpz_t *rptr = reinterpret_cast<mpz_t *>(r);
+    mp_ptr rp = PTR(*rptr);
+    mp_limb_t yl = static_cast<mp_limb_t>(y);
+    mp_limb_t c;
+    timespec tb = {0, 0};
+    timespec te = {0, 0};
+    int rc;
+    int64_t delta = -1;
+
+    rc = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tb);
+    c = mpn_addmul_1(rp, xp, n, yl);
+    rc = rc | clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &te);
+
+    if (c > 0) {
+        ASSERT_ALWAYS(env, ALLOC(*rptr) > n);
+	SIZ(*rptr) = n + 1;
+        rp[n] = c;
+    }
     if (rc == 0) {
 	// assumes delta is less than 4 seconds
         delta = te.tv_nsec - tb.tv_nsec;
@@ -663,6 +707,18 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
  * Signature: (JJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1mul_11_1neon
+  (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
+{
+    throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_OPERATION_NOT_SUPPORTED, env->NewStringUTF("operation not supported"));
+    return -1;
+}
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1_neon
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11_1neon
   (JNIEnv *env, jclass cl, jlong r, jlong x, jlong y)
 {
     throwGMPException(env, org_gmplib_gmpjni_GMP_GMPException_OPERATION_NOT_SUPPORTED, env->NewStringUTF("operation not supported"));

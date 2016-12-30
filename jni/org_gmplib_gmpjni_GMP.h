@@ -1951,6 +1951,22 @@ JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1m
 JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1mul_11_1neon
   (JNIEnv *, jclass, jlong, jlong, jlong);
 
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11
+  (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     org_gmplib_gmpjni_GMP
+ * Method:    native_mpz_internal_mpn_addmul_1_neon
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_gmplib_gmpjni_GMP_native_1mpz_1internal_1mpn_1addmul_11_1neon
+  (JNIEnv *, jclass, jlong, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

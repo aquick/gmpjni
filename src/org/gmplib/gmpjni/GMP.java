@@ -1982,6 +1982,22 @@ public class GMP
 	return native_mpz_internal_mpn_mul_1_neon(r.handle, x.handle, y);
     }
 
+    private static native long native_mpz_internal_mpn_addmul_1(long r, long x, long y);
+    public static long mpz_internal_mpn_addmul_1(mpz_t r, mpz_t x, long y)
+	throws GMPException
+    {
+	checkUnsignedIntRange(y);
+	return native_mpz_internal_mpn_addmul_1(r.handle, x.handle, y);
+    }
+
+    private static native long native_mpz_internal_mpn_addmul_1_neon(long r, long x, long y);
+    public static long mpz_internal_mpn_addmul_1_neon(mpz_t r, mpz_t x, long y)
+	throws GMPException
+    {
+	checkUnsignedIntRange(y);
+	return native_mpz_internal_mpn_addmul_1_neon(r.handle, x.handle, y);
+    }
+
     /***
     public void main(String args[])
     {
