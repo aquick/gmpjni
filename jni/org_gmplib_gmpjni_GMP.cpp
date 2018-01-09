@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <errno.h>
+#include <malloc.h>
 #include "org_gmplib_gmpjni_GMP.h"
 #include "org_gmplib_gmpjni_GMP_GMPException.h"
 #include "gmp.h"

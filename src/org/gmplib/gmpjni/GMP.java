@@ -167,6 +167,7 @@ public class GMP
 	//System.loadLibrary("cyggcc_s-1");
 	//System.loadLibrary("cyggmp-10");
 	Log.d( "gmpjni", "loading native libs" );
+	System.loadLibrary("c++_shared");
 	System.loadLibrary("gmp");
 	System.loadLibrary("gmpjni");
     }
