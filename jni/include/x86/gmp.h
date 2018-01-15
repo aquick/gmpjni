@@ -2317,7 +2317,7 @@ enum
 
 /* Define CC and CFLAGS which were used to build this version of GMP */
 #define __GMP_CC "i686-linux-android-gcc -std=gnu99"
-#define __GMP_CFLAGS "-O2 -g -pedantic -Wa,--noexecstack -fomit-frame-pointer -ffunction-sections -funwind-tables -fstrict-aliasing -funswitch-loops -finline-limit=300 -no-canonical-prefixes -fstack-protector -march=i686 -mtune=intel -mssse3 -mfpmath=sse -m32 --sysroot=c:\\android-ndk-r12b\\platforms\\android-19\\arch-x86"
+#define __GMP_CFLAGS "-O2 -g -pedantic -Wa,--noexecstack -fomit-frame-pointer -ffunction-sections -funwind-tables -fstrict-aliasing -funswitch-loops -finline-limit=300 -no-canonical-prefixes -fstack-protector -march=i686 -mtune=intel -mssse3 -mfpmath=sse -m32 -isystem c:\\android-ndk-r16b\\sysroot\\usr\\include -isystem c:\\android-ndk-r16b\\sysroot\\usr\\include\\i686-linux-android --sysroot=c:\\android-ndk-r16b\\platforms\\android-19\\arch-x86 -D__ANDROID_API__=19"
 
 /* Major version number is the value of __GNU_MP__ too, above. */
 #define __GNU_MP_VERSION            6
