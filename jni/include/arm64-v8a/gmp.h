@@ -40,7 +40,7 @@ see https://www.gnu.org/licenses/.  */
 #if ! defined (__GMP_WITHIN_CONFIGURE)
 #define __GMP_HAVE_HOST_CPU_FAMILY_power   0
 #define __GMP_HAVE_HOST_CPU_FAMILY_powerpc 0
-#define GMP_LIMB_BITS                      32
+#define GMP_LIMB_BITS                      64
 #define GMP_NAIL_BITS                      0
 #endif
 #define GMP_NUMB_BITS     (GMP_LIMB_BITS - GMP_NAIL_BITS)
@@ -2316,8 +2316,8 @@ enum
 };
 
 /* Define CC and CFLAGS which were used to build this version of GMP */
-#define __GMP_CC "armv7a-linux-androideabi19-clang"
-#define __GMP_CFLAGS "-O2 -g -pedantic -fomit-frame-pointer -Wa,--noexecstack -ffunction-sections -funwind-tables -no-canonical-prefixes -fno-strict-aliasing -fstack-protector -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -isystem c:\\android-ndk-r20\\sysroot\\usr\\include -isystem c:\\android-ndk-r20\\sysroot\\usr\\include\\arm-linux-androideabi --sysroot=c:\\android-ndk-r20\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot -D__ANDROID_API__=19"
+#define __GMP_CC "aarch64-linux-android21-clang"
+#define __GMP_CFLAGS "-O2 -g -pedantic -fomit-frame-pointer -Wa,--noexecstack -ffunction-sections -funwind-tables -no-canonical-prefixes -fno-strict-aliasing -fstack-protector -isystem c:\\android-ndk-r20\\sysroot\\usr\\include -isystem c:\\android-ndk-r20\\sysroot\\usr\\include\\aarch64-linux-androideabi --sysroot=c:\\android-ndk-r20\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot -D__ANDROID_API__=21"
 
 /* Major version number is the value of __GNU_MP__ too, above. */
 #define __GNU_MP_VERSION            6
