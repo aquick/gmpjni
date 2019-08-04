@@ -712,34 +712,30 @@ my_mpn_mul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
     mp_limb_t hpl;
     mp_limb_t lpl;
     uint32x2_t u;
-    mp_limb_t *ulp;
     uint32x2_t v = {vl, vl};
     uint64x2_t r;
-    mp_limb_t *rlp;
 
     cl = 0;
     do {
-	ulp = reinterpret_cast<mp_limb_t *>(&u[0]);
-        *ulp++ = *up++;
+	u[0] = up[0];
         if (n > 1) {
-            *ulp = *up++;
+	    u[1] = up[1];
         } else {
-            *ulp = 0;
+	    u[1] = 0;
         }
         r = vmull_u32(u, v);
         //umul_ppmm (hpl, lpl, ul, vl);
-        rlp = reinterpret_cast<mp_limb_t *>(&r[0]);
 
-        lpl = *rlp++; // (mp_limb_t)(r[0] & 0xFFFFFFFF);
-        hpl = *rlp++; // (mp_limb_t)(r[0] >> 32);
+        lpl = (mp_limb_t)(r[0] & 0xFFFFFFFF);
+        hpl = (mp_limb_t)(r[0] >> 32);
         lpl += cl;
         cl = (lpl < cl ? 1 : 0) + hpl;
 
         *rp++ = lpl;
 
         if (n > 1) {
-            lpl = *rlp++; // (mp_limb_t)(r[1] & 0xFFFFFFFF);
-            hpl = *rlp++; // (mp_limb_t)(r[1] >> 32);
+            lpl = (mp_limb_t)(r[1] & 0xFFFFFFFF);
+            hpl = (mp_limb_t)(r[1] >> 32);
             lpl += cl;
             cl = (lpl < cl ? 1 : 0) + hpl;
 
@@ -760,26 +756,22 @@ my_mpn_addmul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
     mp_limb_t hpl;
     mp_limb_t lpl;
     uint32x2_t u;
-    mp_limb_t *ulp;
     uint32x2_t v = {vl, vl};
     uint64x2_t r;
-    mp_limb_t *rlp;
 
     cl = 0;
     do {
-	ulp = reinterpret_cast<mp_limb_t *>(&u[0]);
-        *ulp++ = *up++;
+	u[0] = up[0];
         if (n > 1) {
-            *ulp = *up++;
+	    u[1] = up[1];
         } else {
-            *ulp = 0;
+	    u[1] = 0;
         }
         r = vmull_u32(u, v);
         //umul_ppmm (hpl, lpl, ul, vl);
-        rlp = reinterpret_cast<mp_limb_t *>(&r[0]);
 
-        lpl = *rlp++; // (mp_limb_t)(r[0] & 0xFFFFFFFF);
-        hpl = *rlp++; // (mp_limb_t)(r[0] >> 32);
+        lpl = (mp_limb_t)(r[0] & 0xFFFFFFFF);
+        hpl = (mp_limb_t)(r[0] >> 32);
         lpl += cl;
         cl = (lpl < cl ? 1 : 0) + hpl;
 
@@ -789,8 +781,8 @@ my_mpn_addmul_1 (mp_ptr rp, mp_srcptr up, mp_size_t n, mp_limb_t vl)
         *rp++ = lpl;
 
         if (n > 1) {
-            lpl = *rlp++; // (mp_limb_t)(r[1] & 0xFFFFFFFF);
-            hpl = *rlp++; // (mp_limb_t)(r[1] >> 32);
+            lpl = (mp_limb_t)(r[1] & 0xFFFFFFFF);
+            hpl = (mp_limb_t)(r[1] >> 32);
             lpl += cl;
             cl = (lpl < cl ? 1 : 0) + hpl;
 

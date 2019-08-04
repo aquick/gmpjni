@@ -2316,8 +2316,8 @@ enum
 };
 
 /* Define CC and CFLAGS which were used to build this version of GMP */
-#define __GMP_CC "x86_64-linux-android-gcc -std=gnu99"
-#define __GMP_CFLAGS "-O2 -g -pedantic -Wa,--noexecstack -fomit-frame-pointer -ffunction-sections -funwind-tables -fstrict-aliasing -funswitch-loops -finline-limit=300 -no-canonical-prefixes -fstack-protector-strong -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -isystem c:\\android-ndk-r16b\\sysroot\\usr\\include -isystem c:\\android-ndk-r16b\\sysroot\\usr\\include\\x86_64-linux-android --sysroot=c:\\android-ndk-r16b\\platforms\\android-21\\arch-x86_64 -D__ANDROID_API__=21"
+#define __GMP_CC "x86_64-linux-android21-clang"
+#define __GMP_CFLAGS "-O2 -g -pedantic -Wa,--noexecstack -fomit-frame-pointer -ffunction-sections -funwind-tables -fstrict-aliasing -funswitch-loops -finline-limit=300 -no-canonical-prefixes -fstack-protector-strong -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -isystem c:\\android-ndk-r20\\sysroot\\usr\\include -isystem c:\\android-ndk-r20\\sysroot\\usr\\include\\x86_64-linux-android --sysroot=c:\\android-ndk-r20\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot -D__ANDROID_API__=21"
 
 /* Major version number is the value of __GNU_MP__ too, above. */
 #define __GNU_MP_VERSION            6
