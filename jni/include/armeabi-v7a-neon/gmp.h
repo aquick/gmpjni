@@ -2324,7 +2324,7 @@ enum
 
 /* Define CC and CFLAGS which were used to build this version of GMP */
 #define __GMP_CC "armv7a-linux-androideabi19-clang"
-#define __GMP_CFLAGS "-O2 -g -pedantic -fomit-frame-pointer -Wa,--noexecstack -ffunction-sections -funwind-tables -no-canonical-prefixes -fno-strict-aliasing -fstack-protector -march=armv7-a -mfloat-abi=softfp -mfpu=neon -ftree-vectorize -isystem c:\\android-ndk-r21\\sysroot\\usr\\include -isystem c:\\android-ndk-r21\\sysroot\\usr\\include\\arm-linux-androideabi --sysroot=c:\\android-ndk-r21\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot -D__ANDROID_API__=19"
+#define __GMP_CFLAGS "-O2 -g -pedantic -fomit-frame-pointer -Wa,--noexecstack -ffunction-sections -funwind-tables -no-canonical-prefixes -fno-strict-aliasing -fstack-protector -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -isystem c:\\android-ndk-r21b\\sysroot\\usr\\include -isystem c:\\android-ndk-r21b\\sysroot\\usr\\include\\arm-linux-androideabi --sysroot=c:\\android-ndk-r21b\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot -D__ANDROID_API__=19"
 
 /* Major version number is the value of __GNU_MP__ too, above. */
 #define __GNU_MP_VERSION            6
